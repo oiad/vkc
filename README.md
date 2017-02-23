@@ -1,12 +1,13 @@
 # [EPOCH 1.0.6+] Vehicle Key Changer
 Vehicle key changer script updated for Epoch 1.0.6+ by salival.
 
-* Discussion URL:
+* Discussion URL: https://epochmod.com/forum/topic/43348-release-vehicle-key-changer-updated-for-epoch-106/
 * original discussion url: https://epochmod.com/forum/topic/5972-release-vehicle-key-changer-for-making-masterkey-v-14-updated-06152014/
-* updated discussion url: https://epochmod.com/forum/topic/43048-release-vehicle-key-changer-for-making-masterkey-v-141-updated-for-epoch-106/#comment-284107
+* updated discussion url: https://epochmod.com/forum/topic/43048-release-vehicle-key-changer-for-making-masterkey-v-141-updated-for-epoch-106/
 	
 * Tested as working on a blank Epoch 1.0.6+
-* Uses the epoch vehicle upgrade system to claim/copy the key.
+* This adds support for briefcases, gems and coins.
+* Uses the epoch vehicle upgrade system to do the key changing/claiming.
 
 # Install:
 
