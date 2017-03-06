@@ -24,8 +24,6 @@ _keyItemName = (_this select 3) select 6;
 
 _amount = 5000; 
 
-if (isNil "z_calcCurrency") then {z_calcCurrency = compile preprocessFileLineNumbers "scripts\vkc\z_at_calcCurrency.sqf"}; // Use portable version of z_calcCurrency if epoch version is not installed
-
 player removeAction s_player_claimVehicle;
 s_player_claimVehicle = 1;
 player removeAction s_player_copyToKey;

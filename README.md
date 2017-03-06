@@ -9,6 +9,9 @@ Vehicle key changer script updated for Epoch 1.0.6+ by salival.
 * This adds support for briefcases, gems and coins.
 * Uses the epoch vehicle upgrade system to do the key changing/claiming.
 
+# Epoch 1.0.6.1
+* Please note, to keep things simple I have removed files/information pertaining to 1.0.6, onwards to the future of 1.0.6.1!
+
 # Install:
 
 * This install basically assumes you have NO custom variables.sqf or compiles.sqf or fn_selfActions.sqf, I would recommend diffmerging where possible.
@@ -32,10 +35,6 @@ Vehicle key changer script updated for Epoch 1.0.6+ by salival.
 # dayz_server folder install:
 
 1. Replace or merge the contents of <code>server_publishVehicle3.sqf.sqf</code> provided with your original copy.
-
-# If you are running Epoch 1.0.6 and NOT running Epoch 1.0.6.1+ you must make sure you have the newer epoch_tempKeys that is in the supplied compiles.sqf.
-
-
 	
 # Infistar setup:
 
