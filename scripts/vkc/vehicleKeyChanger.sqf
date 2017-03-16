@@ -22,7 +22,7 @@ _keyItemName = (_this select 3) select 6;
 	Please see dayz_code\configVariables.sqf for the value of gems (DZE_GemWorthArray) and their relevant worth if they are enabled.
 */
 
-_amount = 5000; 
+_amount = 5000;
 
 player removeAction s_player_claimVehicle;
 s_player_claimVehicle = 1;
