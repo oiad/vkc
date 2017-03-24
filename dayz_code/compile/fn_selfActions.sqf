@@ -723,7 +723,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 				_vkc_carKeyName = getText (configFile >> "CfgWeapons" >> _temp_key_name >> "displayName");
 				_temp_keys = _temp_keys - [_characterID];
 				_vkc_temp_keys_names = _temp_keys_names - [_temp_key_name];
-				s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change",_temp_keys,_vkc_temp_keys_names,_vkc_carKeyName,_temp_key_name],5,true,true];
+				s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change",_temp_keys,_vkc_temp_keys_names],5,true,true];
 			};
 		};
 	} else {
@@ -947,7 +947,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 			_temp_keys = _totalKeys select 0;
 			_temp_keys_names = _totalKeys select 1;
 			if (count _temp_keys > 0) then {
-				s_player_claimVehicle = player addAction [format ["<t color=""#0096FF"">Claim %1</t>",_text],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim",_temp_keys,_temp_keys_names,"",""],5,true,true];
+				s_player_claimVehicle = player addAction [format ["<t color=""#0096FF"">Claim %1</t>",_text],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim",_temp_keys,_temp_keys_names],5,true,true];
 			};
 		};
 	} else {

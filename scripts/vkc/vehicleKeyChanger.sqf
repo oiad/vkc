@@ -1,12 +1,10 @@
-private ["_action","_amount","_characterID","_copyMenu","_cursorTarget","_displayName","_enoughMoney","_exit","_i","_itemText","_j","_keyArray","_keyItemName","_keyList","_keyMenu","_keyName","_max","_message","_moneyInfo","_name","_playerNear","_position","_snext","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
+private ["_action","_amount","_characterID","_copyMenu","_cursorTarget","_displayName","_enoughMoney","_exit","_i","_itemText","_j","_keyArray","_keyList","_keyMenu","_max","_message","_moneyInfo","_name","_playerNear","_position","_snext","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
 
 _cursorTarget = (_this select 3) select 0;
 _characterID = (_this select 3) select 1;
 _action = (_this select 3) select 2;
 _keyList = (_this select 3) select 3;
 _displayName = (_this select 3) select 4;
-_keyName = (_this select 3) select 5;
-_keyItemName = (_this select 3) select 6;
 
 /*
 	This version adds support for both single currency and gems (from the epoch 1.0.6 update) as well as the original epoch briefcase currency system. 
