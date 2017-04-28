@@ -1,4 +1,4 @@
-private ["_activatingPlayer","_isOK","_object","_worldspace","_location","_dir","_class","_uid","_key","_keySelected","_characterID","_donotusekey","_message","_action"];
+private ["_activatingPlayer","_isOK","_object","_worldspace","_location","_dir","_class","_uid","_key","_keySelected","_characterID","_donotusekey","_action"];
 //PVDZE_veh_Publish2 = [_veh,[_dir,_location],_part_out,false,_keySelected,_activatingPlayer];
 #include "\z\addons\dayz_server\compile\server_toggle_debug.hpp"
 
@@ -36,7 +36,7 @@ _key call server_hiveWrite;
 
 // Switched to spawn so we can wait a bit for the ID
 [_object,_uid,_characterID,_class,_dir,_location,_donotusekey,_activatingPlayer,_action] spawn {
-   private ["_object","_uid","_characterID","_done","_retry","_key","_result","_outcome","_oid","_class","_location","_donotusekey","_activatingPlayer","_countr","_objectID","_objectUID","_dir","_newobject","_weapons","_magazines","_backpacks","_objWpnTypes","_objWpnQty","_fuel","_hitpoints","_strH","_selection","_dam","_isAir","_newHitPoints","_action","_name","_playerUID","_mgp"];
+   private ["_object","_uid","_characterID","_done","_retry","_key","_result","_outcome","_oid","_class","_location","_donotusekey","_activatingPlayer","_countr","_objectID","_objectUID","_dir","_newobject","_weapons","_magazines","_backpacks","_objWpnTypes","_objWpnQty","_fuel","_hitpoints","_strH","_selection","_dam","_isAir","_newHitPoints","_action","_name","_playerUID","_mgp","_message"];
 
    _object = _this select 0;
    _objectID 	= _object getVariable ["ObjectID","0"];
