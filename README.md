@@ -9,6 +9,14 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 * This adds support for briefcases, gems and coins.
 * Uses the epoch vehicle upgrade system to do the key changing/claiming.
 
+# REPORTING ERRORS/PROBLEMS
+
+1. Please, if you report issues can you please attach (on pastebin or similar) your CLIENT rpt log file as this helps find out the errors very quickly. To find this logfile:
+
+	```sqf
+	C:\users\<YOUR WINDOWS USERNAME>\AppData\Local\Arma 2 OA\ArmA2OA.RPT
+	```
+
 # Install:
 
 * This install basically assumes you have NO custom variables.sqf or compiles.sqf or fn_selfActions.sqf, I would recommend diffmerging where possible.
