@@ -1,12 +1,6 @@
-private ["_action","_amount","_characterID","_copyMenu","_cursorTarget","_displayName","_enoughMoney","_exit","_i","_itemText","_j","_keyArray","_keyList","_keyMenu","_max","_message","_moneyInfo","_name","_playerNear","_position","_snext","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
-
-_cursorTarget = (_this select 3) select 0;
-_characterID = (_this select 3) select 1;
-_action = (_this select 3) select 2;
-_keyList = (_this select 3) select 3;
-_displayName = (_this select 3) select 4;
-
 /*
+	Vehicle Key Changer by salival (https://github.com/oiad)
+	
 	This version adds support for both single currency and gems (from the epoch 1.0.6 update) as well as the original epoch briefcase currency system. 
 	Instead of pricing things like the original way, prices are now done on a "worth" similar to how coins are done. The price value of items are below.
 	If you are using coins, I would recommend using the _currencyModifier variable since coins typically are 10x the value of briefcase based currency (1 brief == 100,000 coins)
@@ -20,7 +14,15 @@ _displayName = (_this select 3) select 4;
 	Please see dayz_code\configVariables.sqf for the value of gems (DZE_GemWorthArray) and their relevant worth if they are enabled.
 */
 
-_amount = 5000;
+private ["_action","_amount","_characterID","_copyMenu","_cursorTarget","_displayName","_enoughMoney","_exit","_i","_itemText","_j","_keyArray","_keyList","_keyMenu","_max","_message","_moneyInfo","_name","_playerNear","_position","_snext","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
+
+_cursorTarget = (_this select 3) select 0;
+_characterID = (_this select 3) select 1;
+_action = (_this select 3) select 2;
+_keyList = (_this select 3) select 3;
+_displayName = (_this select 3) select 4;
+
+_amount = 5000; // Amount in worth the claiming/changing a key will cost. See the top of this file for an explanation.
 
 player removeAction s_player_claimVehicle;
 s_player_claimVehicle = 1;
@@ -74,7 +76,7 @@ _snext = false;
 _message = if (_action == "change") then {
 	["%1's key has been changed to %2","change the key for","changed the key for"]
 } else {
-	["%1 has been claimed, the key is: %2","claim the key for","claimed"]
+	["%1 has been claimed, the new key is: %2","claim the key for","claimed"]
 };
 
 _itemText = if (Z_SingleCurrency) then {format ["%1 %2",[_amount] call BIS_fnc_numberText,CurrencyName]} else {[_amount,true] call z_calcCurrency};
