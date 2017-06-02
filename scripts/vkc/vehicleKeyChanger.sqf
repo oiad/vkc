@@ -14,7 +14,7 @@
 	Please see dayz_code\configVariables.sqf for the value of gems (DZE_GemWorthArray) and their relevant worth if they are enabled.
 */
 
-private ["_action","_amount","_characterID","_copyMenu","_cursorTarget","_displayName","_enoughMoney","_exit","_i","_itemText","_j","_keyArray","_keyList","_keyMenu","_max","_message","_moneyInfo","_name","_playerNear","_position","_snext","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
+private ["_action","_amount","_changePrice","_characterID","_claimPrice","_copyMenu","_cursorTarget","_displayName","_enoughMoney","_exit","_i","_itemText","_j","_keyArray","_keyList","_keyMenu","_max","_message","_moneyInfo","_name","_playerNear","_position","_snext","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
 
 _cursorTarget = (_this select 3) select 0;
 _characterID = (_this select 3) select 1;
@@ -22,7 +22,8 @@ _action = (_this select 3) select 2;
 _keyList = (_this select 3) select 3;
 _displayName = (_this select 3) select 4;
 
-_amount = 5000; // Amount in worth the claiming/changing a key will cost. See the top of this file for an explanation.
+_claimPrice = 1000; // Amount in worth for claiming a vehicle. See the top of this script for an explanation.
+_changePrice = 5000; // Amount in worth for changing the key for a vehicle. See the top of this script for an explanation.
 
 player removeAction s_player_claimVehicle;
 s_player_claimVehicle = 1;
@@ -72,6 +73,8 @@ for "_i" from 0 to (count _keyList) -1 do {
 
 keyNameSelect = "";
 _snext = false;
+
+_amount = if (_action == "change") then {_changePrice} else {_claimPrice};
 
 _message = if (_action == "change") then {
 	["%1's key has been changed to %2","change the key for","changed the key for"]
