@@ -64,18 +64,14 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	
 # Infistar setup:
 
-1. Make sure the variable _BCM (around line 99) is set to false.
-
-2. In your AHconfig.sqf make sure the variable _cMenu (around line 158) contains "#USER:_keyMenu".
-
-2. If you have <code>_CSA = true;</code> in your AHconfig.sqf: Add 4800 to the end of your _ALLOWED_Dialogs array, i.e:
+1. If you have <code>_CSA = true;</code> in your AHconfig.sqf: Add 4800 to the end of your _ALLOWED_Dialogs array, i.e:
 	```sqf
 	_ALLOWED_Dialogs = _ALLOWED_Dialogs + [81000,88890,20001,20002,20003,20004,20005,20006,55510,55511,55514,55515,55516,55517,55518,55519,555120,118338,118339,571113,4800]; // adding some others from community addons
 	```
 
 # Changing to newest version with UI:
 
-1. Install new the BattlEye filter for your scripts.txt
+1. Copy the files from the github repo in the <code>scripts\vkc</code> folder to your current VKC folder in your mission file overwriting anything when prompted.
 
 2. In your <code>dayz_code\compile\fn_selfActions.sqf</code> find this code block:
 	```sqf
@@ -128,3 +124,6 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	```sqf
 	#include "scripts\vkc\vkc.hpp"
 	```
+
+5. Install new the BattlEye filter for your scripts.txt (https://github.com/oiad/vkc#battleye-filter-install)
+6. If you run infiSTAR: In your AHconfig.sqf remove from the _cMenu array (around line 158) <code>,"#USER:_keyMenu"</code> also make sure you run this install step: https://github.com/oiad/vkc#infistar-setup
