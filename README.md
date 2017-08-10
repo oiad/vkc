@@ -25,24 +25,106 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 
 # Mission folder install:
 
-1. In mission\init.sqf find: <code>call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\variables.sqf";</code> and add directly below:
+1. In mission\init.sqf find: <code>call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\variables.sqf";</code> and add this directly below:
 
 	```sqf
 	call compile preprocessFileLineNumbers "dayz_code\init\variables.sqf";
 	```
-	
-2. In mission\init.sqf find: <code>call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\compiles.sqf";</code> and add directly below:
+
+2. In mission\init.sqf find: <code>call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\compiles.sqf";</code> and add this directly below:
 
 	```sqf
 	call compile preprocessFileLineNumbers "dayz_code\init\compiles.sqf";
 	```
 
+3. In mission\description.ext add the following line directly at the bottom:
+
+	```sqf
+	#include "scripts\vkc\vkc.hpp"
+	```
+
 # dayz_server folder install:
 
 1. Replace or merge the contents of <code>server_publishVehicle3.sqf</code> provided with your original copy.
+
+# Battleye filter install:
+
+1. This assumes you are running the DEFAULT epoch filters.
+
+2. On line 12 of <code>config\<yourServerName>\Battleye\scripts.txt</code>: <code>5 createDialog</code> add this to the end of it:
+	```sqf
+	!="createDialog \"vkc\";"
+	```
+	
+	So it will then look like this for example:
+
+	```sqf
+	5 createDialog <CUT> !="createDialog \"vkc\";"
+	```
 	
 # Infistar setup:
 
 1. Make sure the variable _BCM (around line 99) is set to false.
 
 2. In your AHconfig.sqf make sure the variable _cMenu (around line 158) contains "#USER:_keyMenu".
+
+2. If you have <code>_CSA = true;</code> in your AHconfig.sqf: Add 4800 to the end of your _ALLOWED_Dialogs array, i.e:
+	```sqf
+	_ALLOWED_Dialogs = _ALLOWED_Dialogs + [81000,88890,20001,20002,20003,20004,20005,20006,55510,55511,55514,55515,55516,55517,55518,55519,555120,118338,118339,571113,4800]; // adding some others from community addons
+	```
+
+# Changing to newest version with UI:
+
+1. Install new the BattlEye filter for your scripts.txt
+
+2. In your <code>dayz_code\compile\fn_selfActions.sqf</code> find this code block:
+	```sqf
+	if (_hasKey && {_hasKeyKit} && {(count _temp_keys) > 1} && {!_isLocked}) then {
+		_temp_key_name = (_temp_keys_names select (_temp_keys find _characterID));
+		_vkc_carKeyName = getText (configFile >> "CfgWeapons" >> _temp_key_name >> "displayName");
+		_temp_keys = _temp_keys - [_characterID];
+		_vkc_temp_keys_names = _temp_keys_names - [_temp_key_name];
+		s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change",_temp_keys,_vkc_temp_keys_names],5,true,true];
+	};
+	```
+	Replace it with this code block:
+	```sqf
+			if (s_player_copyToKey < 0) then {
+			if (_hasKey && {_hasKeyKit} && {(count _temp_keys) > 1} && {!_isLocked}) then {
+				s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change"],5,false,true];
+			};
+	```
+	Also in your <code>dayz_code\compile\fn_selfActions.sqf</code> find this code block:
+	```sqf
+	if (s_player_claimVehicle < 0) then {
+		_totalKeys = call epoch_tempKeys;
+		_temp_keys = _totalKeys select 0;
+		_temp_keys_names = _totalKeys select 1;
+		if (count _temp_keys > 0) then {
+			s_player_claimVehicle = player addAction [format ["<t color=""#0096FF"">Claim %1</t>",_text],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim",_temp_keys,_temp_keys_names],5,true,true];
+		};
+	};
+	```
+	Replace it with this code block:
+	```sqf
+		if (s_player_claimVehicle < 0) then {
+			_totalKeys = call epoch_tempKeys;
+			if (count (_totalKeys select 0) > 0) then {
+				s_player_claimVehicle = player addAction [format ["<t color=""#0096FF"">Claim %1</t>",_text],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim"],5,false,true];
+			};
+		};
+	```
+3. In your <code>dayz_code\init\variables.sqf</code> find this line:
+	```sqf
+	//Player self-action handles
+	```
+	Add these two lines above it:
+	```sqf
+	vkc_claimPrice = 1000; // Amount in worth for claiming a vehicle. See the top of this script for an explanation.
+	vkc_changePrice = 5000; // Amount in worth for changing the key for a vehicle. See the top of this script for an explanation.
+	```
+4. In mission\description.ext add the following line directly at the bottom:
+
+	```sqf
+	#include "scripts\vkc\vkc.hpp"
+	```
