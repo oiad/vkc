@@ -69,7 +69,7 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	_ALLOWED_Dialogs = _ALLOWED_Dialogs + [81000,88890,20001,20002,20003,20004,20005,20006,55510,55511,55514,55515,55516,55517,55518,55519,555120,118338,118339,571113,4800]; // adding some others from community addons
 	```
 
-# Changing to newest version with UI:
+# Upgrading to the newest version with UI from the original version:
 
 1. Copy the files from the github repo in the <code>scripts\vkc</code> folder to your current VKC folder in your mission file overwriting anything when prompted.
 
@@ -85,7 +85,6 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	```
 	Replace it with this code block:
 	```sqf
-			if (s_player_copyToKey < 0) then {
 			if (_hasKey && {_hasKeyKit} && {(count _temp_keys) > 1} && {!_isLocked}) then {
 				s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change"],5,false,true];
 			};
