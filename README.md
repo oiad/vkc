@@ -73,7 +73,9 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 
 1. Copy the files from the github repo in the <code>scripts\vkc</code> folder to your current VKC folder in your mission file overwriting anything when prompted.
 
-2. In your <code>dayz_code\compile\fn_selfActions.sqf</code> find this code block:
+2. Copy <code>dayz_server\compile\server_publishVehicle3.sqf</code> to your <code>dayz_server\compile</code> folder overwriting it when prompted.
+
+3. In your <code>dayz_code\compile\fn_selfActions.sqf</code> find this code block:
 	```sqf
 	if (_hasKey && {_hasKeyKit} && {(count _temp_keys) > 1} && {!_isLocked}) then {
 		_temp_key_name = (_temp_keys_names select (_temp_keys find _characterID));
@@ -109,7 +111,7 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 			};
 		};
 	```
-3. In your <code>dayz_code\init\variables.sqf</code> find this line:
+4. In your <code>dayz_code\init\variables.sqf</code> find this line:
 	```sqf
 	//Player self-action handles
 	```
@@ -118,11 +120,11 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	vkc_claimPrice = 1000; // Amount in worth for claiming a vehicle. See the top of this script for an explanation.
 	vkc_changePrice = 5000; // Amount in worth for changing the key for a vehicle. See the top of this script for an explanation.
 	```
-4. In mission\description.ext add the following line directly at the bottom:
+5. In mission\description.ext add the following line directly at the bottom:
 
 	```sqf
 	#include "scripts\vkc\vkc.hpp"
 	```
 
-5. Install new the BattlEye filter for your scripts.txt [BattlEye filter install](https://github.com/oiad/vkc#battleye-filter-install)
-6. If you run infiSTAR: In your AHconfig.sqf remove from the _cMenu array (around line 158) <code>,"#USER:_keyMenu"</code> also make sure you run this install step: [Infistar setup](https://github.com/oiad/vkc#infistar-setup)
+6. Install new the BattlEye filter for your scripts.txt [BattlEye filter install](https://github.com/oiad/vkc#battleye-filter-install)
+7. If you run infiSTAR: In your AHconfig.sqf remove from the _cMenu array (around line 158) <code>,"#USER:_keyMenu"</code> also make sure you run this install step: [Infistar setup](https://github.com/oiad/vkc#infistar-setup)
