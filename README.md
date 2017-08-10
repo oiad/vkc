@@ -124,5 +124,5 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	#include "scripts\vkc\vkc.hpp"
 	```
 
-5. Install new the BattlEye filter for your scripts.txt (https://github.com/oiad/vkc#battleye-filter-install)
-6. If you run infiSTAR: In your AHconfig.sqf remove from the _cMenu array (around line 158) <code>,"#USER:_keyMenu"</code> also make sure you run this install step: https://github.com/oiad/vkc#infistar-setup
+5. Install new the BattlEye filter for your scripts.txt [BattlEye filter install](https://github.com/oiad/vkc#battleye-filter-install)
+6. If you run infiSTAR: In your AHconfig.sqf remove from the _cMenu array (around line 158) <code>,"#USER:_keyMenu"</code> also make sure you run this install step: [Infistar setup](https://github.com/oiad/vkc#infistar-setup)
