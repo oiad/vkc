@@ -298,7 +298,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 		//Allow player to fill vehicle 210L
 		if (_hasBarrel && {!_isMan} && {_isVehicle} && {fuel _cursorTarget < 1} && {!a_player_jerryfilling} && {!_isDisallowRefuel}) then {
 			if (s_player_fillfuel210 < 0) then {
-				s_player_fillfuel210 = player addAction [format[localize "str_actions_medical_10",_text,"210"], "\z\addons\dayz_code\actions\refuel.sqf",["ItemFuelBarrel",_cursorTarget], 0, true, true, "", "'ItemFuelBarrel' in magazines player"];
+				s_player_fillfuel210 = player addAction [format[localize "str_actions_medical_10",_text,"210"], "\z\addons\dayz_code\actions\refuel.sqf",["ItemFuelBarrel",_cursorTarget], 0, true, true];
 			};
 		} else {
 			player removeAction s_player_fillfuel210;
@@ -308,7 +308,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 		//Allow player to fill vehicle 20L
 		if (_hasFuel20 && {!_isMan} && {_isVehicle} && {fuel _cursorTarget < 1} && {!a_player_jerryfilling} && {!_isDisallowRefuel}) then {
 			if (s_player_fillfuel20 < 0) then {
-				s_player_fillfuel20 = player addAction [format[localize "str_actions_medical_10",_text,"20"], "\z\addons\dayz_code\actions\refuel.sqf",["ItemJerrycan",_cursorTarget], 0, true, true, "", "'ItemJerrycan' in magazines player"];
+				s_player_fillfuel20 = player addAction [format[localize "str_actions_medical_10",_text,"20"], "\z\addons\dayz_code\actions\refuel.sqf",["ItemJerrycan",_cursorTarget], 0, true, true];
 			};
 		} else {
 			player removeAction s_player_fillfuel20;
@@ -318,7 +318,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 		//Allow player to fill vehicle 5L
 		if (_hasFuel5 && {!_isMan} && {_isVehicle} && {fuel _cursorTarget < 1} && {!a_player_jerryfilling} && {!_isDisallowRefuel}) then {
 			if (s_player_fillfuel5 < 0) then {
-				s_player_fillfuel5 = player addAction [format[localize "str_actions_medical_10",_text,"5"], "\z\addons\dayz_code\actions\refuel.sqf",["ItemFuelcan",_cursorTarget], 0, true, true, "", "'ItemFuelcan' in magazines player"];
+				s_player_fillfuel5 = player addAction [format[localize "str_actions_medical_10",_text,"5"], "\z\addons\dayz_code\actions\refuel.sqf",["ItemFuelcan",_cursorTarget], 0, true, true];
 			};
 		} else {
 			player removeAction s_player_fillfuel5;
@@ -719,11 +719,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 		};
 		if (s_player_copyToKey < 0) then {
 			if (_hasKey && {_hasKeyKit} && {(count _temp_keys) > 1} && {!_isLocked}) then {
-				_temp_key_name = (_temp_keys_names select (_temp_keys find _characterID));
-				_vkc_carKeyName = getText (configFile >> "CfgWeapons" >> _temp_key_name >> "displayName");
-				_temp_keys = _temp_keys - [_characterID];
-				_vkc_temp_keys_names = _temp_keys_names - [_temp_key_name];
-				s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change",_temp_keys,_vkc_temp_keys_names],5,true,true];
+				s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change"],5,false,true];
 			};
 		};
 	} else {
@@ -944,10 +940,8 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 	if (_isVehicle && {_characterID == "0"} && {_hasKeyKit} && {!_isMan} && {_isAlive}) then {
 		if (s_player_claimVehicle < 0) then {
 			_totalKeys = call epoch_tempKeys;
-			_temp_keys = _totalKeys select 0;
-			_temp_keys_names = _totalKeys select 1;
-			if (count _temp_keys > 0) then {
-				s_player_claimVehicle = player addAction [format ["<t color=""#0096FF"">Claim %1</t>",_text],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim",_temp_keys,_temp_keys_names],5,true,true];
+			if (count (_totalKeys select 0) > 0) then {
+				s_player_claimVehicle = player addAction [format ["<t color=""#0096FF"">Claim %1</t>",_text],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim"],5,false,true];
 			};
 		};
 	} else {

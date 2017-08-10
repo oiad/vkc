@@ -14,16 +14,21 @@
 	Please see dayz_code\configVariables.sqf for the value of gems (DZE_GemWorthArray) and their relevant worth if they are enabled.
 */
 
-private ["_action","_amount","_changePrice","_characterID","_claimPrice","_copyMenu","_cursorTarget","_displayName","_enoughMoney","_exit","_i","_itemText","_j","_keyArray","_keyList","_keyMenu","_max","_message","_moneyInfo","_name","_playerNear","_position","_snext","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
+disableSerialization;
 
-_cursorTarget = (_this select 3) select 0;
+if (isNil "vkc_init") then {
+	if (getText (configFile >> "CfgMods" >> "DayZ" >> "version") == "DayZ Epoch 1.0.6.1") then {epoch_tempKeys = compile preprocessFileLineNumbers "scripts\vkc\epoch_tempKeys.sqf";}; // This can be removed when 1.0.6.2 comes out.
+	vkc_vehicleInfo = compile preprocessFileLineNumbers "scripts\vkc\vehicleInfo.sqf";
+	vkc_init = true;
+};
+
+private ["_amount","_characterID","_control","_currencyModifier","_enoughMoney","_exit","_foundPos","_index","_itemText","_message","_moneyInfo","_name","_playerNear","_position","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
+
+vkc_cursorTarget = (_this select 3) select 0;
 _characterID = (_this select 3) select 1;
-_action = (_this select 3) select 2;
-_keyList = (_this select 3) select 3;
-_displayName = (_this select 3) select 4;
+vkc_action = (_this select 3) select 2;
 
-_claimPrice = 1000; // Amount in worth for claiming a vehicle. See the top of this script for an explanation.
-_changePrice = 5000; // Amount in worth for changing the key for a vehicle. See the top of this script for an explanation.
+vkc_isOk = false;
 
 player removeAction s_player_claimVehicle;
 s_player_claimVehicle = 1;
@@ -31,24 +36,30 @@ player removeAction s_player_copyToKey;
 s_player_copyToKey = 1;
 
 _exit = {
+	vkc_action = nil;
+	vkc_keyList = nil;
+	vkc_keyName = nil;
+	vkc_charID = nil;
+	vkc_isOk = nil;
+	vkc_cursorTarget = nil;
 	s_player_copyToKey = -1;
 	s_player_claimVehicle = -1;
 };
 
-_playerNear = {isPlayer _x} count (([_cursorTarget] call FNC_GetPos) nearEntities ["CAManBase", 10]) > 1;
+_playerNear = {isPlayer _x} count (([vkc_cursorTarget] call FNC_GetPos) nearEntities ["CAManBase", 10]) > 1;
 if (_playerNear) exitWith {call _exit; localize "str_pickup_limit_5" call dayz_rollingMessages;};
 
-if (isNull _cursorTarget) exitWith {call _exit; systemChat "cursorTarget isNull!";};
+if (isNull vkc_cursorTarget) exitWith {call _exit; systemChat "cursorTarget isNull!";};
 
-if !(_cursorTarget isKindOf "Air" || {_cursorTarget isKindOf "LandVehicle"} || {_cursorTarget isKindOf "Ship"}) exitWith {call _exit; "cursorTarget is not a vehicle." call dayz_rollingMessages;};
+if !(vkc_cursorTarget isKindOf "Air" || {vkc_cursorTarget isKindOf "LandVehicle"} || {vkc_cursorTarget isKindOf "Ship"}) exitWith {call _exit; "cursorTarget is not a vehicle." call dayz_rollingMessages;};
 
-_vehicleID = _cursorTarget getVariable ["ObjectID","0"];
-_vehicleUID = _cursorTarget getVariable ["ObjectUID","0"];
+_vehicleID = vkc_cursorTarget getVariable ["ObjectID","0"];
+_vehicleUID = vkc_cursorTarget getVariable ["ObjectUID","0"];
 
-_typeOf = typeOf _cursorTarget;
+_typeOf = typeOf vkc_cursorTarget;
 _name = getText(configFile >> "cfgVehicles" >> _typeOf >> "displayName");
 
-if (_vehicleID == "0" && {_vehicleUID == "0"}) exitWith {call _exit; format ["Sorry but %1 does not support Keychange/Claiming!",_name] call dayz_rollingMessages;};
+if ((_vehicleID == "0" && {_vehicleUID == "0"}) || {_vehicleID == "1" || _vehicleUID == "1"}) exitWith {call _exit; format ["Sorry but %1 does not support Keychange/Claiming!",_name] call dayz_rollingMessages;};
 
 if (_vehicleUID == "0") then {
 	_vehicleUID = "";
@@ -56,62 +67,53 @@ if (_vehicleUID == "0") then {
 		_x = _x * 10;
 		if (_x < 0) then {_x = _x * -10};
 		_vehicleUID = _vehicleUID + str(round(_x));
-	} forEach getPosATL _cursorTarget;
-	_vehicleUID = _vehicleUID + str(round((getDir _cursorTarget) + time));
-	_cursorTarget setVariable["ObjectUID",_vehicleUID,true];
+	} forEach getPosATL vkc_cursorTarget;
+	_vehicleUID = _vehicleUID + str(round((getDir vkc_cursorTarget) + time));
+	vkc_cursorTarget setVariable["ObjectUID",_vehicleUID,true];
 };
 
-keyNameList = [];
-for "_i" from 0 to (count _displayName) -1 do {
-	keyNameList set [(count keyNameList),_displayName select _i];
-};
+vkc_keyList = call epoch_tempKeys;
 
-keyNumberList = [];
-for "_i" from 0 to (count _keyList) -1 do {
-	keyNumberList set [(count keyNumberList),_keyList select _i];
-};
-
-keyNameSelect = "";
-_snext = false;
-
-_amount = if (_action == "change") then {_changePrice} else {_claimPrice};
-
-_message = if (_action == "change") then {
-	["%1's key has been changed to %2","change the key for","changed the key for"]
+if (vkc_action == "change") then {
+	_amount = vkc_changePrice;
+	_message = ["%1's key has been changed to %2","change the key for","changed the key for"];
+	_foundPos = (vkc_keyList select 0) find _characterID;
+	if (_foundPos >= 0) then {
+		vkc_keyList set [0,(vkc_keyList select 0) - [(vkc_keyList select 0) select _foundPos]];
+		vkc_keyList set [1,(vkc_keyList select 1) - [(vkc_keyList select 1) select _foundPos]];
+		vkc_keyList set [2,(vkc_keyList select 2) - [(vkc_keyList select 2) select _foundPos]];
+	} else {
+		vkc_keyList = [[],[]];
+	};
 } else {
-	["%1 has been claimed, the new key is: %2","claim the key for","claimed"]
+	_amount = vkc_claimPrice;
+	_message = ["%1 has been claimed, the new key is: %2","claim the key for","claimed"];
 };
+
+if (count (vkc_keyList select 0) == 0) exitWith {systemChat "No valid keys were found in your inventory."; call _exit;};
+
+if (!isNil "sk_dualCurrency") then {if (z_singleCurrency) then {_amount = _amount * 10};};
 
 _itemText = if (Z_SingleCurrency) then {format ["%1 %2",[_amount] call BIS_fnc_numberText,CurrencyName]} else {[_amount,true] call z_calcCurrency};
 
-_copyMenu = {
-	private ["_keyMenu","_keyArray"];
-	_keyMenu = [["",true], [format ["Select the new key (%1):",_itemText], [-1], "", -5, [["expression", ""]], "1", "0"]];
-	for "_i" from (_this select 0) to (_this select 1) do {
-		_keyArray = [format['%1', keyNameList select (_i)], [_i - (_this select 0) + 2], "", -5, [["expression", format ["keyNameSelect = keyNameList select %1; keyNumberSelect = keyNumberList select %1", _i]]], "1", "1"];
-		_keyMenu set [_i + 2, _keyArray];
-	};
-	_keyMenu set [(_this select 1) + 2, ["", [-1], "", -5, [["expression", ""]], "1", "0"]];
-	if (count keyNameList > (_this select 1)) then {
-		_keyMenu set [(_this select 1) + 3, ["Next", [12], "", -5, [["expression", "_snext = true;"]], "1", "1"]];
-	} else {
-		_keyMenu set [(_this select 1) + 3, ["", [-1], "", -5, [["expression", ""]], "1", "0"]];
-	};
-	_keyMenu set [(_this select 1) + 4, ["Exit", [13], "", -5, [["expression", "keyNameSelect = 'exitscript';"]], "1", "1"]];
-	showCommandingMenu "#USER:_keyMenu";
-};
+createDialog "vkc";
+{ctrlShow [_x,false]} count [4803,4850,4851];
 
-_j = 0;
-_max = 10;
-if (_max > 9) then {_max = 10;};
-while {keyNameSelect == ""} do {
-	[_j, (_j + _max) min (count keyNameList)] call _copyMenu;
-	_j = _j + _max;
-	waitUntil {keyNameSelect != "" || _snext};
-	_snext = false;
-};
+call vkc_vehicleInfo;
 
-if (keyNameSelect == "exitscript") exitWith {call _exit;};
+_control = ((findDisplay 4800) displayCtrl 4802);
+lbClear _control;
+
+{
+	_index = _control lbAdd ((vkc_keyList select 1) select _forEachIndex);
+	_control lbSetPicture [_index,getText(configFile >> "CfgWeapons" >> ((vkc_keyList select 2) select _index) >> "picture")];
+} forEach (vkc_keyList select 0);
+
+_control lbSetCurSel 0;
+
+waitUntil {!dialog};
+
+if (!vkc_isOk) exitWith {call _exit;};
 
 _enoughMoney = false;
 _moneyInfo = [false,[],[],[],0];
@@ -137,17 +139,17 @@ if (_enoughMoney) then {
 			player setVariable[Z_MoneyVariable,(_wealth - _amount),true];
 		};
 
-		_cursorTarget setVehicleLock "LOCKED";
+		vkc_cursorTarget setVehicleLock "LOCKED";
 		player playActionNow "Medic";
-		
-		_position = getPosASL _cursorTarget;
-	
+
+		_position = getPosASL vkc_cursorTarget;
+
 		if !(surfaceIsWater _position) then {_position = ASLToATL _position;};
-		
+
 		[_typeOf,objNull] call fn_waitForObject;
 		dze_waiting = nil;
-		
-		PVDZE_veh_Upgrade = [_cursorTarget,[getDir _cursorTarget,_position],_typeOf,false,keyNumberSelect,player,_message select 2];
+
+		PVDZE_veh_Upgrade = [vkc_cursorTarget,[getDir vkc_cursorTarget,_position],_typeOf,false,vkc_charID,player,_message select 2];
 		publicVariableServer "PVDZE_veh_Upgrade";
 
 		{player reveal _x;} count (player nearEntities [["LandVehicle"],10]);
@@ -163,7 +165,7 @@ if (_enoughMoney) then {
 				_success = [_amount,0,false,0,[],[],false] call Z_returnChange;
 			};
 		} else {
-			format [_message select 0,_name,keyNameSelect] call dayz_rollingMessages;
+			format [_message select 0,_name,vkc_keyName] call dayz_rollingMessages;
 		};
 	} else {
 		systemChat localize "STR_EPOCH_TRADE_DEBUG";
@@ -172,4 +174,4 @@ if (_enoughMoney) then {
 	systemChat format ["You need %1 to %2 %3.",_itemText,_message select 1,_name];
 };
 
-call _exit; 
+call _exit;

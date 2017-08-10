@@ -1,3 +1,6 @@
+vkc_claimPrice = 1000; // Amount in worth for claiming a vehicle. See the top of this script for an explanation.
+vkc_changePrice = 5000; // Amount in worth for changing the key for a vehicle. See the top of this script for an explanation.
+
 //Player self-action handles
 dayz_resetSelfActions = {
 	s_player_equip_carry = -1;
