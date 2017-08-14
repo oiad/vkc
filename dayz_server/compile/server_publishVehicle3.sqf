@@ -122,6 +122,7 @@ _key call server_hiveWrite;
 
 	_object setDir _dir;
 	_object setPosATL _location;
+	_object setVectorUp surfaceNormal _location;
 	_object setFuel _fuel;
 
 	_isAir = _object isKindOf "Air";
