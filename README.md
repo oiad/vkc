@@ -17,6 +17,15 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	C:\users\<YOUR WINDOWS USERNAME>\AppData\Local\Arma 2 OA\ArmA2OA.RPT
 	```
 
+# Index:
+
+* [Fresh Install](https://github.com/oiad/vkc#fresh-install)
+* [Mission folder install](https://github.com/oiad/vkc#mission-folder-install)
+* [dayz_server folder install](https://github.com/oiad/vkc#dayz_server-folder-install)
+* [BattlEye filter install](https://github.com/oiad/vkc#battleye-filter-install)
+* [infiSTAR setup](https://github.com/oiad/vkc#infistar-setup)
+* [Upgrading with previous version installed](https://github.com/oiad/vkc#upgrading-with-previous-version-installed)
+	
 # Fresh install:
 
 * This install basically assumes you have NO custom variables.sqf or compiles.sqf or fn_selfActions.sqf, I would recommend diffmerging where possible.
