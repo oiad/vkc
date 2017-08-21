@@ -64,9 +64,14 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	
 # Infistar setup:
 
-1. If you have <code>_CSA = true;</code> in your AHconfig.sqf: Add 4800 to the end of your _ALLOWED_Dialogs array, i.e:
+1. If you have <code>_CUD = true;</code> in your AHconfig.sqf: Add <code>4800</code> to the end of your <code>_ALLOWED_Dialogs</code> array, i.e:
 	```sqf
 	_ALLOWED_Dialogs = _ALLOWED_Dialogs + [81000,88890,20001,20002,20003,20004,20005,20006,55510,55511,55514,55515,55516,55517,55518,55519,555120,118338,118339,571113,4800]; // adding some others from community addons
+	```
+
+2. If you have <code>_CSA =  true;</code> in your AHconfig.sqf: Add <code>,"s_player_copyToKey","s_player_claimVehicle"</code> to the end of your <code>_dayzActions =</code> array, i.e:
+	```sqf
+	"Tow_settings_dlg_CV_btn_fermer","Tow_settings_dlg_CV_titre","unpackRavenAct","vectorActions","wardrobe","s_player_copyToKey","s_player_claimVehicle"
 	```
 
 # Upgrading with previous version installed:
