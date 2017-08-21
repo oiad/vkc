@@ -1,4 +1,4 @@
-private ["_activatingPlayer","_isOK","_object","_worldspace","_location","_dir","_class","_uid","_key","_keySelected","_characterID","_donotusekey","_action"];
+private ["_activatingPlayer","_isOK","_object","_worldspace","_location","_dir","_class","_uid","_key","_keySelected","_characterID","_donotusekey","_action","_colour","_colour2"];
 //PVDZE_veh_Publish2 = [_veh,[_dir,_location],_part_out,false,_keySelected,_activatingPlayer];
 #include "\z\addons\dayz_server\compile\server_toggle_debug.hpp"
 
@@ -26,6 +26,12 @@ _dir = 		_worldspace select 0;
 _location = _worldspace select 1;
 _uid = _worldspace call dayz_objectUID2;
 
+_colour = _object getVariable ["Colour","0"];
+_colour2 = _object getVariable ["Colour2","0"];
+
+if (isNil "_colour") then {_colour = "0";};
+if (isNil "_colour2") then {_colour2 = "0";};
+
 //Send request
 _key = format["CHILD:308:%1:%2:%3:%4:%5:%6:%7:%8:%9:",dayZ_instance, _class, 0 , _characterID, _worldspace, [], [], 1,_uid];
 #ifdef OBJECT_DEBUG
@@ -35,23 +41,26 @@ diag_log ("HIVE: WRITE: "+ str(_key));
 _key call server_hiveWrite;
 
 // Switched to spawn so we can wait a bit for the ID
-[_object,_uid,_characterID,_class,_dir,_location,_donotusekey,_activatingPlayer,_action] spawn {
-   private ["_object","_uid","_characterID","_done","_retry","_key","_result","_outcome","_oid","_class","_location","_donotusekey","_activatingPlayer","_countr","_objectID","_objectUID","_dir","_newobject","_weapons","_magazines","_backpacks","_objWpnTypes","_objWpnQty","_fuel","_hitpoints","_strH","_selection","_dam","_isAir","_newHitPoints","_action","_name","_playerUID","_mgp","_message"];
+[_object,_uid,_characterID,_class,_dir,_location,_donotusekey,_activatingPlayer,_action,_colour,_colour2] spawn {
+	private ["_object","_uid","_characterID","_done","_retry","_key","_result","_outcome","_oid","_class","_location","_donotusekey","_activatingPlayer","_countr","_objectID","_objectUID","_dir","_newobject","_weapons","_magazines","_backpacks","_objWpnTypes","_objWpnQty","_fuel","_hitpoints","_strH","_selection","_dam","_isAir","_newHitPoints","_action","_name","_playerUID","_mgp","_message","_colour","_colour2","_clrinit","_clrinit2"];
 
-   _object = _this select 0;
-   _objectID 	= _object getVariable ["ObjectID","0"];
-   _objectUID	= _object getVariable ["ObjectUID","0"];
-   _uid = _this select 1;
-   _characterID = _this select 2;
-   _class = _this select 3;
-   _dir = _this select 4;
-   // _location = _this select 5;
-   _location = [_object] call fnc_getPos;
-   _donotusekey = _this select 6;
-   _activatingPlayer = _this select 7;
-   _action = _this select 8;
+	_object = _this select 0;
+	_objectID 	= _object getVariable ["ObjectID","0"];
+	_objectUID	= _object getVariable ["ObjectUID","0"];
+	_uid = _this select 1;
+	_characterID = _this select 2;
+	_class = _this select 3;
+	_dir = _this select 4;
+	// _location = _this select 5;
+	_location = [_object] call fnc_getPos;
+	_donotusekey = _this select 6;
+	_activatingPlayer = _this select 7;
+	_action = _this select 8;
 
-   _done = false;
+	_colour = _this select 9;
+	_colour2 = _this select 10;
+
+	_done = false;
 	_retry = 0;
 	// TODO: Needs major overhaul for 1.1
 	while {_retry < 10} do {
@@ -60,7 +69,7 @@ _key call server_hiveWrite;
 		#ifdef OBJECT_DEBUG
 		diag_log ("HIVE: WRITE: "+ str(_key));
 		#endif
-		
+
 		_result = _key call server_hiveReadWrite;
 		_outcome = _result select 0;
 		if (_outcome == "PASS") then {
@@ -69,7 +78,7 @@ _key call server_hiveWrite;
 			#ifdef OBJECT_DEBUG
 			diag_log("CUSTOM: Selected " + str(_oid));
 			#endif
-			
+
 			_done = true;
 			_retry = 100;
 
@@ -85,15 +94,15 @@ _key call server_hiveWrite;
 		diag_log("HIVE-pv3: failed to get id for : " + str(_uid));
 		_key = format["CHILD:310:%1:",_uid];
 		_key call server_hiveWrite;
-		
+
 		dze_waiting = "fail";
 		(owner _activatingPlayer) publicVariableClient "dze_waiting";
 	};
-	
+
 	_hitpoints = _object call vehicle_getHitpoints;
 	_newHitPoints = [];
 	_fuel = fuel _object;
-	
+
 	{
 		_dam = [_object,_x] call object_getHit;
 		_selection = getText (configFile >> "CfgVehicles" >> (typeOf _object) >> "HitPoints" >> _x >> "name");
@@ -101,9 +110,9 @@ _key call server_hiveWrite;
 	} forEach _hitpoints;
 
 	// add items from previous vehicle here
-	_weapons = 		getWeaponCargo _object;
-	_magazines = 	getMagazineCargo _object;
-	_backpacks = 	getBackpackCargo _object;
+	_weapons = getWeaponCargo _object;
+	_magazines = getMagazineCargo _object;
+	_backpacks = getBackpackCargo _object;
 
 	clearWeaponCargoGlobal _object;
 	clearMagazineCargoGlobal _object;
@@ -137,7 +146,7 @@ _key call server_hiveWrite;
 	clearWeaponCargoGlobal _object;
 	clearMagazineCargoGlobal _object;
 	clearBackpackCargoGlobal _object;
-	
+
 	//Add weapons
 	_objWpnTypes = _weapons select 0;
 	_objWpnQty = _weapons select 1;
@@ -146,7 +155,7 @@ _key call server_hiveWrite;
 		_object addWeaponCargoGlobal [_x,(_objWpnQty select _countr)];
 		_countr = _countr + 1;
 	} count _objWpnTypes;
-	
+
 	//Add Magazines
 	_objWpnTypes = _magazines select 0;
 	_objWpnQty = _magazines select 1;
@@ -165,9 +174,23 @@ _key call server_hiveWrite;
 		_countr = _countr + 1;
 	} count _objWpnTypes;
 
-	_object setVariable ["ObjectID", _oid, true];
-	_object setVariable ["lastUpdate",time];
-	_object setVariable ["CharacterID", _characterID, true];
+	_object setVariable ["ObjectID",_oid,true];
+	_object setVariable ["lastUpdate",diag_ticktime];
+	_object setVariable ["CharacterID",_characterID,true];
+
+	if (_colour != "0") then {
+		_object setVariable ["Colour",_colour,true];
+		_clrinit = format ["#(argb,8,8,3)color(%1)",_colour];
+		_object setVehicleInit "this setObjectTexture [0,"+str _clrinit+"];";
+	};
+
+	if (_colour2 != "0") then {
+		_object setVariable ["Colour2",_colour2,true];
+		_clrinit2 = format ["#(argb,8,8,3)color(%1)",_colour2];
+		_object setVehicleInit "this setObjectTexture [1,"+str _clrinit2+"];";
+	};
+
+	processInitCommands;
 
 	dayz_serverObjectMonitor set [count dayz_serverObjectMonitor,_object];
 
@@ -180,11 +203,11 @@ _key call server_hiveWrite;
 
 	dze_waiting = "success";
 	(owner _activatingPlayer) publicVariableClient "dze_waiting";
-	
+
 	_name = if (alive _activatingPlayer) then {name _activatingPlayer} else {"unknown player"};
 	_playerUID = getPlayerUID _activatingPlayer;
 	_mgp = mapGridPosition _location;
-	
+
 	if (_action == "") then {
 		_message = format ["%1 (%2) upgraded %3 @%4 %5",_name,_playerUID,_class,_mgp,_location];
 	} else {
