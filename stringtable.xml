@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project name="DayZMission">
+	<Package name="VKC">
+		<Key ID="STR_VKC_TITLE">
+			<English>Vehicle Key Changer</English>
+		</Key>
+		<Key ID="STR_VKC_INFO">
+			<English>Vehicle Info</English>
+		</Key>
+		<Key ID="STR_VKC_KEYS">
+			<English>Your keys</English>
+		</Key>
+		<Key ID="STR_VKC_CLAIM">
+			<English>Claim vehicle</English>
+		</Key>
+		<Key ID="STR_VKC_CHANGE">
+			<English>Change key</English>
+		</Key>
+		<Key ID="STR_VKC_FAIL_CURSOR">
+			<English>cursorTarget is not a vehicle.</English>
+		</Key>
+		<Key ID="STR_VKC_FAIL_SUPPORT">
+			<English>Sorry but %1 does not support Keychange/Claiming!</English>
+		</Key>
+		<Key ID="STR_VKC_CHANGE_MESSAGE_1">
+			<English>%1's key has been changed to %2</English>
+		</Key>
+		<Key ID="STR_VKC_CHANGE_MESSAGE_2">
+			<English>change the key for</English>
+		</Key>
+		<Key ID="STR_VKC_CHANGE_MESSAGE_3">
+			<English>changed the key for</English>
+		</Key>
+		<Key ID="STR_VKC_CLAIM_MESSAGE_1">
+			<English>%1 has been claimed, the new key is: %2</English>
+		</Key>
+		<Key ID="STR_VKC_CLAIM_MESSAGE_2">
+			<English>claim the key for</English>
+		</Key>
+		<Key ID="STR_VKC_CLAIM_MESSAGE_3">
+			<English>claimed</English>
+		</Key>
+		<Key ID="STR_VKC_FAIL_KEYS">
+			<English>No valid keys were found in your inventory.</English>
+		</Key>
+		<Key ID="STR_VKC_FAIL_UPGRADE">
+			<English>Failed to upgrade %1, you have been refunded the cost. If this continues, contact the admin</English>
+		</Key>
+		<Key ID="STR_VKC_FAIL_MONEY">
+			<English>You need %1 to %2 %3.</English>
+		</Key>
+	</Package>
+</Project>

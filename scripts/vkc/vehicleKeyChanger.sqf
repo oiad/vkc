@@ -55,7 +55,7 @@ if (_playerNear) exitWith {call _exit; localize "str_pickup_limit_5" call dayz_r
 
 if (isNull vkc_cursorTarget) exitWith {call _exit; systemChat "cursorTarget isNull!";};
 
-if !(vkc_cursorTarget isKindOf "Air" || {vkc_cursorTarget isKindOf "LandVehicle"} || {vkc_cursorTarget isKindOf "Ship"}) exitWith {call _exit; "cursorTarget is not a vehicle." call dayz_rollingMessages;};
+if !(vkc_cursorTarget isKindOf "Air" || {vkc_cursorTarget isKindOf "LandVehicle"} || {vkc_cursorTarget isKindOf "Ship"}) exitWith {call _exit; localize "STR_VKC_FAIL_CURSOR" call dayz_rollingMessages;};
 
 _vehicleID = vkc_cursorTarget getVariable ["ObjectID","0"];
 _vehicleUID = vkc_cursorTarget getVariable ["ObjectUID","0"];
@@ -63,7 +63,7 @@ _vehicleUID = vkc_cursorTarget getVariable ["ObjectUID","0"];
 _typeOf = typeOf vkc_cursorTarget;
 _name = getText(configFile >> "cfgVehicles" >> _typeOf >> "displayName");
 
-if ((_vehicleID == "0" && {_vehicleUID == "0"}) || {_vehicleID == "1" || _vehicleUID == "1"}) exitWith {call _exit; format ["Sorry but %1 does not support Keychange/Claiming!",_name] call dayz_rollingMessages;};
+if ((_vehicleID == "0" && {_vehicleUID == "0"}) || {_vehicleID == "1" || _vehicleUID == "1"}) exitWith {call _exit; format [localize "STR_VKC_FAIL_SUPPORT",_name] call dayz_rollingMessages;};
 
 if (_vehicleUID == "0") then {
 	_vehicleUID = "";
@@ -80,7 +80,7 @@ vkc_keyList = call epoch_tempKeys;
 
 if (vkc_action == "change") then {
 	_amount = vkc_changePrice;
-	_message = ["%1's key has been changed to %2","change the key for","changed the key for"];
+	_message = [localize "STR_VKC_CHANGE_MESSAGE_1",localize "STR_VKC_CHANGE_MESSAGE_2",localize "STR_VKC_CHANGE_MESSAGE_3"];
 	_foundPos = (vkc_keyList select 0) find _characterID;
 	if (_foundPos >= 0) then {
 		vkc_keyList set [0,(vkc_keyList select 0) - [(vkc_keyList select 0) select _foundPos]];
@@ -91,10 +91,10 @@ if (vkc_action == "change") then {
 	};
 } else {
 	_amount = vkc_claimPrice;
-	_message = ["%1 has been claimed, the new key is: %2","claim the key for","claimed"];
+	_message = [localize "STR_VKC_CLAIM_MESSAGE_1",localize "STR_VKC_CLAIM_MESSAGE_2",localize "STR_VKC_CLAIM_MESSAGE_3"];
 };
 
-if (count (vkc_keyList select 0) == 0) exitWith {systemChat "No valid keys were found in your inventory."; call _exit;};
+if (count (vkc_keyList select 0) == 0) exitWith {systemChat localize "STR_VKC_FAIL_KEYS"; call _exit;};
 
 if (!isNil "sk_dualCurrency") then {if (z_singleCurrency) then {_amount = _amount * 10};};
 
@@ -161,7 +161,7 @@ if (_enoughMoney) then {
 		waitUntil {!isNil "dze_waiting"};
 		
 		if (dze_waiting == "fail") then {
-			systemChat format ["Failed to upgrade %1, you have been refunded the cost. If this continues, contact the admin",_name];
+			systemChat format [localize "STR_VKC_FAIL_UPGRADE",_name];
 			if (z_singleCurrency) then {
 				player setVariable[Z_MoneyVariable,_wealth,true];
 			} else {
@@ -175,7 +175,7 @@ if (_enoughMoney) then {
 		systemChat localize "STR_EPOCH_TRADE_DEBUG";
 	};
 } else {
-	systemChat format ["You need %1 to %2 %3.",_itemText,_message select 1,_name];
+	systemChat format [localize "STR_VKC_FAIL_MONEY",_itemText,_message select 1,_name];
 };
 
 call _exit;
