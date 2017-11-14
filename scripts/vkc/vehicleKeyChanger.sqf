@@ -24,6 +24,9 @@ if (isNil "vkc_init") then {
 
 private ["_amount","_characterID","_control","_currencyModifier","_enoughMoney","_exit","_foundPos","_index","_itemText","_message","_moneyInfo","_name","_playerNear","_position","_success","_typeOf","_vehicleID","_vehicleUID","_wealth"];
 
+if (dayz_actionInProgress) exitWith {localize "str_player_actionslimit" call dayz_rollingMessages;};
+dayz_actionInProgress = true;
+
 vkc_cursorTarget = (_this select 3) select 0;
 _characterID = (_this select 3) select 1;
 vkc_action = (_this select 3) select 2;
@@ -44,6 +47,7 @@ _exit = {
 	vkc_cursorTarget = nil;
 	s_player_copyToKey = -1;
 	s_player_claimVehicle = -1;
+	dayz_actionInProgress = false;
 };
 
 _playerNear = {isPlayer _x} count (([vkc_cursorTarget] call FNC_GetPos) nearEntities ["CAManBase", 10]) > 1;
