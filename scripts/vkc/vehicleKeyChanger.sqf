@@ -17,7 +17,6 @@
 disableSerialization;
 
 if (isNil "vkc_init") then {
-	if (getText (configFile >> "CfgMods" >> "DayZ" >> "version") == "DayZ Epoch 1.0.6.1") then {epoch_tempKeys = compile preprocessFileLineNumbers "scripts\vkc\epoch_tempKeys.sqf";}; // This can be removed when 1.0.6.2 comes out.
 	vkc_vehicleInfo = compile preprocessFileLineNumbers "scripts\vkc\vehicleInfo.sqf";
 	vkc_init = true;
 };
@@ -153,7 +152,7 @@ if (_enoughMoney) then {
 		[_typeOf,objNull] call fn_waitForObject;
 		dze_waiting = nil;
 
-		PVDZE_veh_Upgrade = [vkc_cursorTarget,[getDir vkc_cursorTarget,_position],_typeOf,false,vkc_charID,player,_message select 2];
+		PVDZE_veh_Upgrade = [vkc_cursorTarget,[getDir vkc_cursorTarget,_position],_typeOf,false,vkc_charID,player,dayz_authKey,_message select 2];
 		publicVariableServer "PVDZE_veh_Upgrade";
 
 		{player reveal _x;} count (player nearEntities [["LandVehicle"],10]);
