@@ -7,7 +7,6 @@ dayz_resetSelfActions = {
 	s_player_fire = -1;
 	s_player_cook = -1;
 	s_player_boil = -1;
-	s_player_fireout = -1;
 	s_player_packtent = -1;
 	s_player_packtentinfected = -1;
 	s_player_fillfuel = -1;
