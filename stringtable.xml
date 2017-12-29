@@ -23,7 +23,7 @@
 		</Key>
 		<Key ID="STR_VKC_FAIL_CURSOR">
 			<English>cursorTarget is not a vehicle.</English>
-			<German>Du schaust nicht richtig auf das Fahrzeug</German>				
+			<German>Du schaust nicht richtig auf das Fahrzeug.</German>				
 		</Key>
 		<Key ID="STR_VKC_FAIL_SUPPORT">
 			<English>Sorry but %1 does not support Keychange/Claiming!</English>
