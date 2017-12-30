@@ -3,51 +3,67 @@
 	<Package name="VKC">
 		<Key ID="STR_VKC_TITLE">
 			<English>Vehicle Key Changer</English>
+			<German>Fahrzeugschlüssel wechseln</German>				
 		</Key>
 		<Key ID="STR_VKC_INFO">
 			<English>Vehicle Info</English>
+			<German>Fahrzeug-Info</German>				
 		</Key>
 		<Key ID="STR_VKC_KEYS">
 			<English>Your keys</English>
+			<German>Deine Schlüssel</German>				
 		</Key>
 		<Key ID="STR_VKC_CLAIM">
 			<English>Claim vehicle</English>
+			<German>Beanspruchen</German>				
 		</Key>
 		<Key ID="STR_VKC_CHANGE">
 			<English>Change key</English>
+			<German>Schlüssel ändern</German>					
 		</Key>
 		<Key ID="STR_VKC_FAIL_CURSOR">
 			<English>cursorTarget is not a vehicle.</English>
+			<German>Du schaust nicht richtig auf das Fahrzeug.</German>				
 		</Key>
 		<Key ID="STR_VKC_FAIL_SUPPORT">
 			<English>Sorry but %1 does not support Keychange/Claiming!</English>
+			<German>Leider unterstützt %1 keinen Schlüsselwechsel oder eine Beanspruchung!</German>				
 		</Key>
 		<Key ID="STR_VKC_CHANGE_MESSAGE_1">
 			<English>%1's key has been changed to %2</English>
+			<German>%1's Schlüssel hat sich zu %2 geändert</German>		
 		</Key>
 		<Key ID="STR_VKC_CHANGE_MESSAGE_2">
 			<English>change the key for</English>
+			<German>ändere den Schlüssel für</German>					
 		</Key>
 		<Key ID="STR_VKC_CHANGE_MESSAGE_3">
 			<English>changed the key for</English>
+			<German>Schlüssel geändert für</German>				
 		</Key>
 		<Key ID="STR_VKC_CLAIM_MESSAGE_1">
 			<English>%1 has been claimed, the new key is: %2</English>
+			<German>%1 wurde beansprucht, der neue Schlüssel ist: %2</German>				
 		</Key>
 		<Key ID="STR_VKC_CLAIM_MESSAGE_2">
 			<English>claim the key for</English>
+			<German>beanspruche den Schlüssel für</German>				
 		</Key>
 		<Key ID="STR_VKC_CLAIM_MESSAGE_3">
 			<English>claimed</English>
+			<German>beansprucht</German>			
 		</Key>
 		<Key ID="STR_VKC_FAIL_KEYS">
 			<English>No valid keys were found in your inventory.</English>
+			<German>Es wurden keine geeigneten Schlüssel in deinem Inventar gefunden.</German>				
 		</Key>
 		<Key ID="STR_VKC_FAIL_UPGRADE">
 			<English>Failed to upgrade %1, you have been refunded the cost. If this continues, contact the admin</English>
+			<German>Upgrade für %1 fehlgeschlagen, dir wurden die Kosten zurückerstattet. Kontaktiere den Admin, falls das Problem weiterhin auftritt.</German>					
 		</Key>
 		<Key ID="STR_VKC_FAIL_MONEY">
 			<English>You need %1 to %2 %3.</English>
+			<German>Du brauchst %1 um %2 %3.</German>				
 		</Key>
 	</Package>
 </Project>
