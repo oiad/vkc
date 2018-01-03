@@ -52,9 +52,7 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 	#include "scripts\vkc\vkc.hpp"
 	```
 
-4. If you have no <code>stringtable.xml</code> in your mission pbo root directory, copy the supplied <code>stringtable.xml</code> file to your mission pbo.
-
-5. If you run ESSv3 or any other scripts that use the <code>stringtable.xml</code> file (ZSC, Virtual Garage, Remote Vehicle etc) diff merge the supplied stringtable.xml with your version.
+4. Copy the supplied <code>stringTable.xml</code> to your mission folder, it is a community based localization file and contains translations for major community mods including this one. See https://github.com/oiad/communityLocalizations for more information.
 
 # dayz_server folder install:
 
