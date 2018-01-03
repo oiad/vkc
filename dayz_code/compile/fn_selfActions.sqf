@@ -13,7 +13,7 @@ private ["_canPickLight","_text","_unlock","_lock","_totalKeys","_temp_keys","_t
 "_isModular","_isModularDoor","_isHouse","_isGateOperational","_isGateLockable","_isFence","_isLockableGate","_isUnlocked","_isOpen","_isClosed","_ownerArray","_ownerBuildLock",
 "_ownerPID","_speed","_dog","_vehicle","_inVehicle","_cursorTarget","_primaryWeapon","_currentWeapon","_magazinesPlayer","_onLadder","_canDo",
 "_nearLight","_vehicleOwnerID","_hasHotwireKit","_isPZombie","_dogHandle","_allowedDistance","_id","_upgrade","_weaponsPlayer","_hasCrowbar",
-"_allowed","_hasAccess","_uid","_myCharID","_isLocked","_hasKeyKit"];
+"_allowed","_hasAccess","_uid","_myCharID","_isLocked"];
 
 _vehicle = vehicle player;
 _inVehicle = (_vehicle != player);
@@ -239,7 +239,6 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 	_weaponsPlayer = weapons player;
 	_hasCrowbar = "ItemCrowbar" in _itemsPlayer or "MeleeCrowbar" in _weaponsPlayer or dayz_onBack == "MeleeCrowbar";
 	_hasToolbox = "ItemToolbox" in _itemsPlayer;
-	_hasKeyKit = "ItemKeyKit" in weapons player;
 	_hasbottleitem = (("ItemWaterBottle" in _magazinesPlayer) || {"ItemWaterBottleInfected" in _magazinesPlayer} || {"ItemWaterBottleSafe" in _magazinesPlayer} || {"ItemWaterBottleBoiled" in _magazinesPlayer});
 	_isAlive = alive _cursorTarget;
 	_text = getText (configFile >> "CfgVehicles" >> _typeOfCursorTarget >> "displayName");
@@ -618,7 +617,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 			};
 		};
 		if (s_player_copyToKey < 0) then {
-			if (_hasKey && {_hasKeyKit} && {(count _temp_keys) > 1} && {!_isLocked}) then {
+			if (_hasKey && {"ItemKeyKit" in weapons player} && {(count _temp_keys) > 1} && {!_isLocked}) then {
 				s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change"],5,false,true];
 			};
 		};
@@ -644,7 +643,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 		// Check player access
 		_hasAccess = [player, _cursorTarget] call FNC_check_access;
 		if (s_player_manageDoor < 0 && ((_hasAccess select 0) or (_hasAccess select 2) or (_hasAccess select 3) or (_hasAccess select 4) or (_hasAccess select 5) or (_hasAccess select 6))) then {
-			s_player_manageDoor = player addAction [format["<t color='#b3e6ff'>%1</t>", localize "STR_EPOCH_ACTIONS_MANAGEDOOR"], "\z\addons\dayz_code\actions\doorManagement\initDoorManagement.sqf", _cursorTarget, 5, false];
+			s_player_manageDoor = player addAction [format["<t color='#0059FF'>%1</t>", localize "STR_EPOCH_ACTIONS_MANAGEDOOR"], "\z\addons\dayz_code\actions\doorManagement\initDoorManagement.sqf", _cursorTarget, 5, false];
 		};
 	} else {
 		player removeAction s_player_manageDoor;
@@ -837,7 +836,7 @@ if (!isNull _cursorTarget && !_inVehicle && !_isPZombie && (player distance _cur
 	*/
 	// Custom stuff below
 
-	if (_isVehicle && {_characterID == "0"} && {_hasKeyKit} && {!_isMan} && {_isAlive}) then {
+	if (_isVehicle && {_characterID == "0"} && {"ItemKeyKit" in weapons player} && {!_isMan} && {_isAlive}) then {
 		if (s_player_claimVehicle < 0) then {
 			_totalKeys = call epoch_tempKeys;
 			if (count (_totalKeys select 0) > 0) then {
