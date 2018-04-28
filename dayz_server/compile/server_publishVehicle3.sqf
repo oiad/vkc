@@ -67,7 +67,7 @@ if (_outcome != "PASS") then {
 	diag_log("CUSTOM: Selected " + str(_oid));
 	#endif
 	[_object,_uid,_characterID,_class,_dir,_location,_activatingPlayer,_playerUID,_oid,_action] spawn {
-		private ["_action","_activatingPlayer","_backpacks","_characterID","_class","_clrinit","_clrinit2","_colour","_colour2","_dam","_dir","_fuel","_hitpoints","_i","_isAir","_location","_magazines","_message","_mgp","_name","_newHitPoints","_newobject","_object","_objectID","_objectUID","_oid","_playerUID","_selection","_strH","_uid","_weapons"];
+		private ["_action","_activatingPlayer","_backpacks","_characterID","_class","_clrinit","_clrinit2","_colour","_colour2","_dam","_dir","_fuel","_hitpoints","_i","_isAir","_location","_magazines","_message","_mgp","_name","_newHitPoints","_newobject","_object","_objectID","_objectUID","_oid","_playerUID","_selection","_strH","_uid","_weapons","_clearTurrets"];
 
 		_object = _this select 0;
 		_uid = _this select 1;
@@ -85,6 +85,39 @@ if (_outcome != "PASS") then {
 		_hitpoints = _object call vehicle_getHitpoints;
 		_newHitPoints = [];
 		_fuel = fuel _object;
+
+		_clearTurrets = {
+			//By denvdmj (probably, I found it on the biki)
+			private ["_weaponArray","_findRecurse","_class","_obj","_turret","_mags"];
+			_obj = _this;
+
+			_weaponArray = [];
+			_weaponArray set [count _weaponArray,[-1]];
+
+			_findRecurse = {
+				private ["_root", "_class", "_path", "_currentPath", "_thisThis"];
+				_root = (_this select 0);
+				_path = +(_this select 1);
+				_thisThis = _this select 2;
+				for "_i" from 0 to count _root -1 do {
+				   _class = _root select _i;
+				   if (isClass _class) then {
+					  _currentPath = _path + [_i];
+					  {_weaponArray set [count _weaponArray, _currentPath];} count getArray (_class >> "weapons");
+					  _class = _class >> "turrets";
+					  if (isClass _class) then {[_class, _currentPath, _thisThis] call _findRecurse;};
+				   };
+				};
+			};
+
+			[configFile >> "CfgVehicles" >> typeOf (_obj) >> "turrets", [], _this] call _findRecurse;
+
+			{
+				_turret = _x;
+				_mags = _obj magazinesTurret _turret;
+				{_obj removeMagazinesTurret[_x,_turret];} count _mags;
+			} forEach _weaponArray;
+		};
 
 		{
 			_dam = [_object,_x] call object_getHit;
@@ -156,6 +189,9 @@ if (_outcome != "PASS") then {
 		// for non JIP users this should make sure everyone has eventhandlers for vehicles.
 		PVDZE_veh_Init = _object;
 		publicVariable "PVDZE_veh_Init";
+
+		{if (_object isKindOf _x) exitWith {_object disableTIEquipment true;}} count vkc_disableThermal;
+		if (vkc_clearAmmo) then {_object call _clearTurrets;};
 
 		dze_waiting = "success";
 		(owner _activatingPlayer) publicVariableClient "dze_waiting";

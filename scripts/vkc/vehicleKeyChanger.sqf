@@ -138,9 +138,7 @@ if (!_success && {_enoughMoney}) exitWith {call _exit;systemChat localize "STR_E
 if (_enoughMoney) then {
 	_success = if (Z_SingleCurrency) then {_amount <= _wealth} else {[player,_amount,_moneyInfo,false,0] call Z_payDefault};
 	if (_success) then {
-		if (Z_SingleCurrency) then {
-			player setVariable[Z_MoneyVariable,(_wealth - _amount),true];
-		};
+		if (Z_SingleCurrency) then {player setVariable[Z_MoneyVariable,(_wealth - _amount),true];};
 
 		vkc_cursorTarget setVehicleLock "LOCKED";
 		player playActionNow "Medic";
@@ -153,10 +151,12 @@ if (_enoughMoney) then {
 		PVDZE_veh_Upgrade = [vkc_cursorTarget,[getDir vkc_cursorTarget,_position],_typeOf,false,vkc_charID,player,dayz_authKey,_message select 2];
 		publicVariableServer "PVDZE_veh_Upgrade";
 
+		localize "STR_CL_VKC_WAIT" call dayz_rollingMessages;
+
 		waitUntil {!isNil "dze_waiting"};
 		
 		if (dze_waiting == "fail") then {
-			systemChat format [localize "STR_CL_VKC_FAIL_UPGRADE",_name];
+			systemChat format[localize "STR_CL_VKC_FAIL_UPGRADE",_name];
 			if (z_singleCurrency) then {
 				player setVariable[Z_MoneyVariable,_wealth,true];
 			} else {
@@ -165,7 +165,7 @@ if (_enoughMoney) then {
 			};
 		} else {
 			{player reveal _x;} count (player nearEntities [["LandVehicle"],10]);
-			format [_message select 0,_name,vkc_keyName] call dayz_rollingMessages;
+			[format[_message select 0,_name,vkc_keyName],1] call dayz_rollingMessages;
 		};
 	} else {
 		systemChat localize "STR_EPOCH_TRADE_DEBUG";
