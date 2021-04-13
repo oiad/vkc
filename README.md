@@ -19,7 +19,6 @@ Vehicle key changer script for Epoch 1.0.7 by salival updated by Airwaves Man.
 
 # Index:
 
-* [Fresh Install](https://github.com/oiad/vkc#fresh-install)
 * [Mission folder install](https://github.com/oiad/vkc#mission-folder-install)
 * [dayz_server folder install](https://github.com/oiad/vkc#dayz_server-folder-install)
 * [BattlEye filter install](https://github.com/oiad/vkc#battleye-filter-install)
