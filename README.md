@@ -1,11 +1,11 @@
-# [EPOCH 1.0.6.1] Vehicle Key Changer
-Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
+# [EPOCH 1.0.7] Vehicle Key Changer
+Vehicle key changer script for Epoch 1.0.7 by salival updated by Airwaves Man.
 
 * Discussion URL: https://epochmod.com/forum/topic/43348-release-vehicle-key-changer-updated-for-epoch-106/
 * original discussion url: https://epochmod.com/forum/topic/5972-release-vehicle-key-changer-for-making-masterkey-v-14-updated-06152014/
 * updated discussion url: https://epochmod.com/forum/topic/43048-release-vehicle-key-changer-for-making-masterkey-v-141-updated-for-epoch-106/
 	
-* Tested as working on a blank Epoch 1.0.6.1
+* Tested as working on a blank Epoch 1.0.7
 * This adds support for briefcases, gems and coins.
 * Uses the epoch vehicle upgrade system to do the key changing/claiming.
 
@@ -23,126 +23,298 @@ Vehicle key changer script updated for Epoch 1.0.6.1 by salival.
 * [Mission folder install](https://github.com/oiad/vkc#mission-folder-install)
 * [dayz_server folder install](https://github.com/oiad/vkc#dayz_server-folder-install)
 * [BattlEye filter install](https://github.com/oiad/vkc#battleye-filter-install)
-* [infiSTAR setup](https://github.com/oiad/vkc#infistar-setup)
-* [Upgrading with previous version installed](https://github.com/oiad/vkc#upgrading-with-previous-version-installed)
 	
-# Fresh install:
+**[>> Download <<](https://github.com/oiad/vkc/archive/master.zip)**	
+	
+# Install:
 
-* This install basically assumes you have NO custom variables.sqf or compiles.sqf or fn_selfActions.sqf, I would recommend diffmerging where possible.
-
-**[>> Download <<](https://github.com/oiad/vkc/archive/master.zip)**
+* This install basically assumes you have a custom variables.sqf, compiles.sqf and fn_selfActions.sqf.
 
 # Mission folder install:
 
-1. In mission\init.sqf find: <code>call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\variables.sqf";</code> and add this directly below:
+1. 	Open your fn_selfactions.sqf and search for:
 
 	```sqf
-	call compile preprocessFileLineNumbers "dayz_code\init\variables.sqf";
+	// ZSC
+	if (Z_singleCurrency) then {
 	```
 
-2. In mission\init.sqf find: <code>call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\compiles.sqf";</code> and add this directly below:
+	Add this code lines above:
+	
+	```sqf	
+	if (_isVehicle && !_isMan && _isAlive && {_characterID == "0"} && {"ItemKeyKit" in weapons player}) then {
+		if (s_player_claimVehicle < 0) then {
+			_totalKeys = call epoch_tempKeys;
+			if (count (_totalKeys select 0) > 0) then {
+				s_player_claimVehicle = player addAction [format["<t color='#0059FF'>%1</t>",format[localize "STR_CL_VKC_CLAIM_ACTION",_text]],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim"],5,false,true];
+			};
+		};
+	} else {
+		player removeAction s_player_claimVehicle;
+		s_player_claimVehicle = -1;
+	};
+	```	
+	
+2. 	Open your fn_selfactions.sqf and search for:
 
 	```sqf
-	call compile preprocessFileLineNumbers "dayz_code\init\compiles.sqf";
+	// Allow Owner to lock and unlock vehicle
+	if (_player_lockUnlock_crtl) then {
+		if (s_player_lockUnlock_crtl < 0) then {
+			local _totalKeys = call epoch_tempKeys;
+			local _temp_keys = _totalKeys select 0;
+			local _temp_keys_names = _totalKeys select 1;
+			local _hasKey = _characterID in _temp_keys;
+			local _oldOwner = (_characterID == _uid);
+			local _unlock = [];
+			
+			if (_isLocked) then {
+				if (_hasKey || _oldOwner) then {
+					_unlock = player addAction [format[localize "STR_EPOCH_ACTIONS_UNLOCK",_text], "\z\addons\dayz_code\actions\unlock_veh.sqf",[_cursorTarget,(_temp_keys_names select (_temp_keys find _characterID))], 2, true, true];
+					s_player_lockunlock set [count s_player_lockunlock,_unlock];
+					s_player_lockUnlock_crtl = 1;
+				} else {
+					if (_hasHotwireKit) then {
+						_unlock = player addAction [format[localize "STR_EPOCH_ACTIONS_HOTWIRE",_text], "\z\addons\dayz_code\actions\hotwire_veh.sqf",_cursorTarget, 2, true, true];
+					} else {
+						_unlock = player addAction [format["<t color='#ff0000'>%1</t>",localize "STR_EPOCH_ACTIONS_VEHLOCKED"], "",_cursorTarget, 2, false, true];
+					};
+					s_player_lockunlock set [count s_player_lockunlock,_unlock];
+					s_player_lockUnlock_crtl = 1;
+				};
+			} else {
+				if (_hasKey || _oldOwner) then {
+					_lock = player addAction [format[localize "STR_EPOCH_ACTIONS_LOCK",_text], "\z\addons\dayz_code\actions\lock_veh.sqf",_cursorTarget, 1, true, true];
+					s_player_lockunlock set [count s_player_lockunlock,_lock];
+					s_player_lockUnlock_crtl = 1;
+				};
+			};
+		};
+	} else {
+		{player removeAction _x} count s_player_lockunlock;s_player_lockunlock = [];
+		s_player_lockUnlock_crtl = -1;
+	};
 	```
 
-3. In mission\description.ext add the following line directly at the bottom:
+	Replace the code from above with this code:
+	
+	```sqf	
+	// Allow Owner to lock and unlock vehicle
+	if (_player_lockUnlock_crtl) then {
+		local _totalKeys = call epoch_tempKeys;
+		local _temp_keys = _totalKeys select 0;
+		local _temp_keys_names = _totalKeys select 1;
+		local _hasKey = _characterID in _temp_keys;
+		
+		if (s_player_lockUnlock_crtl < 0) then {
+			local _oldOwner = (_characterID == _uid);
+			local _unlock = [];
+			
+			if (_isLocked) then {
+				if (_hasKey || _oldOwner) then {
+					_unlock = player addAction [format[localize "STR_EPOCH_ACTIONS_UNLOCK",_text], "\z\addons\dayz_code\actions\unlock_veh.sqf",[_cursorTarget,(_temp_keys_names select (_temp_keys find _characterID))], 2, true, true];
+					s_player_lockunlock set [count s_player_lockunlock,_unlock];
+					s_player_lockUnlock_crtl = 1;
+				} else {
+					if (_hasHotwireKit) then {
+						_unlock = player addAction [format[localize "STR_EPOCH_ACTIONS_HOTWIRE",_text], "\z\addons\dayz_code\actions\hotwire_veh.sqf",_cursorTarget, 2, true, true];
+					} else {
+						_unlock = player addAction [format["<t color='#ff0000'>%1</t>",localize "STR_EPOCH_ACTIONS_VEHLOCKED"], "",_cursorTarget, 2, false, true];
+					};
+					s_player_lockunlock set [count s_player_lockunlock,_unlock];
+					s_player_lockUnlock_crtl = 1;
+				};
+			} else {
+				if (_hasKey || _oldOwner) then {
+					_lock = player addAction [format[localize "STR_EPOCH_ACTIONS_LOCK",_text], "\z\addons\dayz_code\actions\lock_veh.sqf",_cursorTarget, 1, true, true];
+					s_player_lockunlock set [count s_player_lockunlock,_lock];
+					s_player_lockUnlock_crtl = 1;
+				};
+			};
+		};
+		if (s_player_copyToKey < 0) then {
+			if ((_hasKey && !_isLocked && {"ItemKeyKit" in weapons player} && {(count _temp_keys) > 1}) || {_cursorTarget getVariable ["hotwired",false]}) then {
+				s_player_copyToKey = player addAction [format["<t color='#0059FF'>%1</t>",localize "STR_CL_VKC_CHANGE_ACTION"],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,if (_cursorTarget getVariable ["hotwired",false]) then {"claim"} else {"change"}],5,false,true];
+			};
+		};		
+	} else {
+		{player removeAction _x} count s_player_lockunlock;s_player_lockunlock = [];
+		s_player_lockUnlock_crtl = -1;
+		player removeAction s_player_copyToKey;
+		s_player_copyToKey = -1;
+	};
+	```		
+	
+3. In fn_selfactions search for this codeblock:
+
+	```sqf
+	player removeAction s_bank_dialog3;
+	s_bank_dialog3 = -1;
+	player removeAction s_player_checkWallet;
+	s_player_checkWallet = -1;	
+	```	
+	
+	And add this below:
+	
+	```sqf
+	player removeAction s_player_copyToKey;
+	s_player_copyToKey = -1;
+	player removeAction s_player_claimVehicle;
+	s_player_claimVehicle = -1;
+	```
+	
+4. Open your variables.sqf and search for:
+
+	```sqf
+	s_bank_dialog3 = -1;
+	s_player_checkWallet = -1;	
+	```
+	And add this below:
+	
+	```sqf
+	s_player_copyToKey = -1;
+	s_player_claimVehicle = -1;
+	```
+	
+5. Open your variables.sqf and search for:	
+
+	```sqf
+	if (!isDedicated) then {
+	```
+	
+	And add this inside the square brackets so it looks like this:
+	
+	```sqf
+	if (!isDedicated) then {
+		vkc_claimPrice = 1000; // Amount in worth for claiming a vehicle. See the top of this script for an explanation.
+		vkc_changePrice = 5000; // Amount in worth for changing the key for a vehicle. See the top of this script for an explanation.
+	};	
+	```
+	
+6. Open your variables.sqf and search for:	
+
+	```sqf
+	if (isServer) then {
+	```
+	
+	And add this inside the square brackets so it looks like this:
+	
+	```sqf
+	if (isServer) then {
+		vkc_clearAmmo = true; // Clear the ammo of vehicles after they have been rekeyed/claimed? (stops users getting a free rearm)
+		vkc_disableThermal = [""]; // Array of vehicle config classes as well as vehicle classnames to disable thermal on when being spawned. i.e: ["All","Land","Air","Ship","StaticWeapon","AH1Z","MTVR"];
+	};	
+	```		
+	
+7. In mission\description.ext add the following line directly at the bottom:
 
 	```sqf
 	#include "scripts\vkc\vkc.hpp"
 	```
-
-4. Download the <code>stringTable.xml</code> file linked below from the [Community Localization GitHub](https://github.com/oiad/communityLocalizations) and copy it to your mission folder, it is a community based localization file and contains translations for major community mods including this one.
-
-**[>> Download stringTable.xml <<](https://github.com/oiad/communityLocalizations/blob/master/stringTable.xml)**
-
+	
 # dayz_server folder install:
 
 1. Replace or merge the contents of <code>server_publishVehicle3.sqf</code> provided with your original copy.
 
 # Battleye filter install:
 
-1. This assumes you are running the DEFAULT epoch filters.
+1. In your config\<yourServerName>\Battleye\scripts.txt around line 17: <code>5 cashMoney</code> add this to the end of it:
 
-2. On line 12 of <code>config\<yourServerName>\Battleye\scripts.txt</code>: <code>5 createDialog</code> add this to the end of it:
 	```sqf
-	!="createDialog \"vkc\";"
+	!="nfo = [false,[],[],[],0];\n_wealth = player getVariable [([\"cashMoney\",\"globalMoney\"] select Z_persistentMoney),0];\n\nif (Z_Single"
 	```
-	
+
 	So it will then look like this for example:
 
 	```sqf
-	5 createDialog <CUT> !="createDialog \"vkc\";"
+	5 cashMoney <CUT> !="nfo = [false,[],[],[],0];\n_wealth = player getVariable [([\"cashMoney\",\"globalMoney\"] select Z_persistentMoney),0];\n\nif (Z_Single"
 	```
 	
-# Infistar setup:
-
-1. If you have <code>_CUD = true;</code> in your AHconfig.sqf: Add <code>4800</code> to the end of your <code>_ALLOWED_Dialogs</code> array, i.e:
-	```sqf
-	_ALLOWED_Dialogs = _ALLOWED_Dialogs + [81000,88890,20001,20002,20003,20004,20005,20006,55510,55511,55514,55515,55516,55517,55518,55519,555120,118338,118339,571113,4800]; // adding some others from community addons
-	```
-
-2. If you have <code>_CSA =  true;</code> in your AHconfig.sqf: Add <code>,"s_player_copyToKey","s_player_claimVehicle"</code> to the end of your <code>_dayzActions =</code> array, i.e:
-	```sqf
-	"Tow_settings_dlg_CV_btn_fermer","Tow_settings_dlg_CV_titre","unpackRavenAct","vectorActions","wardrobe","s_player_copyToKey","s_player_claimVehicle"
-	```
-
-# Upgrading with previous version installed:
-
-1. Copy the files from the github repo in the <code>scripts\vkc</code> folder to your current VKC folder in your mission file overwriting anything when prompted.
-
-2. Copy <code>dayz_server\compile\server_publishVehicle3.sqf</code> to your <code>dayz_server\compile</code> folder overwriting it when prompted.
-
-3. In your <code>dayz_code\compile\fn_selfActions.sqf</code> find this code block:
-	```sqf
-	if (_hasKey && {_hasKeyKit} && {(count _temp_keys) > 1} && {!_isLocked}) then {
-		_temp_key_name = (_temp_keys_names select (_temp_keys find _characterID));
-		_vkc_carKeyName = getText (configFile >> "CfgWeapons" >> _temp_key_name >> "displayName");
-		_temp_keys = _temp_keys - [_characterID];
-		_vkc_temp_keys_names = _temp_keys_names - [_temp_key_name];
-		s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change",_temp_keys,_vkc_temp_keys_names],5,true,true];
-	};
-	```
-	Replace it with this code block:
-	```sqf
-			if (_hasKey && {_hasKeyKit} && {(count _temp_keys) > 1} && {!_isLocked}) then {
-				s_player_copyToKey = player addAction ["<t color=""#0096FF"">Change vehicle key</t>","scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"change"],5,false,true];
-			};
-	```
-	Also in your <code>dayz_code\compile\fn_selfActions.sqf</code> find this code block:
-	```sqf
-	if (s_player_claimVehicle < 0) then {
-		_totalKeys = call epoch_tempKeys;
-		_temp_keys = _totalKeys select 0;
-		_temp_keys_names = _totalKeys select 1;
-		if (count _temp_keys > 0) then {
-			s_player_claimVehicle = player addAction [format ["<t color=""#0096FF"">Claim %1</t>",_text],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim",_temp_keys,_temp_keys_names],5,true,true];
-		};
-	};
-	```
-	Replace it with this code block:
-	```sqf
-		if (s_player_claimVehicle < 0) then {
-			_totalKeys = call epoch_tempKeys;
-			if (count (_totalKeys select 0) > 0) then {
-				s_player_claimVehicle = player addAction [format ["<t color=""#0096FF"">Claim %1</t>",_text],"scripts\vkc\vehicleKeyChanger.sqf",[_cursorTarget,_characterID,"claim"],5,false,true];
-			};
-		};
-	```
-4. In your <code>dayz_code\init\variables.sqf</code> find this line:
-	```sqf
-	//Player self-action handles
-	```
-	Add these two lines above it:
-	```sqf
-	vkc_claimPrice = 1000; // Amount in worth for claiming a vehicle. See the top of this script for an explanation.
-	vkc_changePrice = 5000; // Amount in worth for changing the key for a vehicle. See the top of this script for an explanation.
-	```
-5. In mission\description.ext add the following line directly at the bottom:
+2. In your config\<yourServerName>\Battleye\scripts.txt around line 22: <code>1 compile</code> add this to the end of it:
 
 	```sqf
-	#include "scripts\vkc\vkc.hpp"
+	!="ialization;\n\nif (isNil \"vkc_init\") then {\nvkc_vehicleInfo = compile preprocessFileLineNumbers \"scripts\\vkc\\vehicleInfo.sqf\";\nvkc"
 	```
 
-6. Install new the BattlEye filter for your scripts.txt [BattlEye filter install](https://github.com/oiad/vkc#battleye-filter-install)
-7. If you run infiSTAR: In your AHconfig.sqf remove from the _cMenu array (around line 158) <code>,"#USER:_keyMenu"</code> also make sure you run this install step: [Infistar setup](https://github.com/oiad/vkc#infistar-setup)
+	So it will then look like this for example:
+
+	```sqf
+	1 compile <CUT> !="ialization;\n\nif (isNil \"vkc_init\") then {\nvkc_vehicleInfo = compile preprocessFileLineNumbers \"scripts\\vkc\\vehicleInfo.sqf\";\nvkc"
+	```	
+	
+3. In your config\<yourServerName>\Battleye\scripts.txt around line 24: <code>5 createDialog</code> add this to the end of it:
+
+	```sqf
+	!="urrencyName]} else {[_amount,true] call z_calcCurrency};\n\ncreateDialog \"vkc\";\n{ctrlShow [_x,false]} count [4803,4850,4851];\n\ncal"
+	```
+
+	So it will then look like this for example:
+
+	```sqf
+	5 createDialog <CUT> !="urrencyName]} else {[_amount,true] call z_calcCurrency};\n\ncreateDialog \"vkc\";\n{ctrlShow [_x,false]} count [4803,4850,4851];\n\ncal"
+	```	
+	
+4. In your config\<yourServerName>\Battleye\scripts.txt around line 43: <code>5 globalMoney</code> add this to the end of it:
+
+	```sqf
+	!="[],[],[],0];\n_wealth = player getVariable [([\"cashMoney\",\"globalMoney\"] select Z_persistentMoney),0];\n\nif (Z_SingleCurrency) the"
+	```
+
+	So it will then look like this for example:
+
+	```sqf
+	5 globalMoney <CUT> !="[],[],[],0];\n_wealth = player getVariable [([\"cashMoney\",\"globalMoney\"] select Z_persistentMoney),0];\n\nif (Z_SingleCurrency) the"
+	```	
+
+5. In your config\<yourServerName>\Battleye\scripts.txt around line 50: <code>5 lbSet</code> add this to the end of it:
+
+	```sqf
+	!="bAdd ((vkc_keyList select 1) select _forEachIndex);\n_control lbSetPicture [_index,getText(configFile >> \"CfgWeapons\" >> ((vkc_ke"
+	```
+
+	So it will then look like this for example:
+
+	```sqf
+	5 lbSet <CUT> !="bAdd ((vkc_keyList select 1) select _forEachIndex);\n_control lbSetPicture [_index,getText(configFile >> \"CfgWeapons\" >> ((vkc_ke"
+	```
+	
+6. In your config\<yourServerName>\Battleye\scripts.txt around line 53: <code>1 nearEntities</code> add this to the end of it:
+
+	```sqf
+	!="{isPlayer _x} count (([vkc_cursorTarget] call FNC_GetPos) nearEntities [\"CAManBase\", 10]) > 1;\nif (_playerNear) exitWith {call _"
+	```
+
+	So it will then look like this for example:
+
+	```sqf
+	1 nearEntities <CUT> !="{isPlayer _x} count (([vkc_cursorTarget] call FNC_GetPos) nearEntities [\"CAManBase\", 10]) > 1;\nif (_playerNear) exitWith {call _"
+	```	
+	
+7. In your config\<yourServerName>\Battleye\scripts.txt around line 80: <code>5 setVehicle</code> add this to the end of it:
+
+	```sqf
+	!="stentMoney),(_wealth - _amount),true];};\n\nvkc_cursorTarget setVehicleLock \"LOCKED\";\nplayer playActionNow \"Medic\";\n\n_position = ["
+	```
+
+	So it will then look like this for example:
+
+	```sqf
+	5 setVehicle <CUT> !="stentMoney),(_wealth - _amount),true];};\n\nvkc_cursorTarget setVehicleLock \"LOCKED\";\nplayer playActionNow \"Medic\";\n\n_position = ["
+	```	
+	
+8. In your config\<yourServerName>\Battleye\scripts.txt around line 49: <code>5 lbCurSel</code> add this to the end of it:
+
+	```sqf
+	!="vkc_charID = (vkc_keyList select 0) select (lbCurSel 4802);vkc_keyName = (vkc_keyList select 1) select (lbCurSel 4802);"
+	```
+
+	So it will then look like this for example:
+
+	```sqf
+	5 lbCurSel <CUT> !="vkc_charID = (vkc_keyList select 0) select (lbCurSel 4802);vkc_keyName = (vkc_keyList select 1) select (lbCurSel 4802);"
+	```	
+
+**** *For Epoch 1.0.6.2 only* ****
+**[>> Download <<](https://github.com/oiad/vkc/archive/refs/tags/Epoch_1.0.6.2.zip)**
+
+Visit this link: https://github.com/oiad/vkc/tree/Epoch_1.0.6.2	
