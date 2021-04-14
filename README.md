@@ -22,12 +22,17 @@ Vehicle key changer script for Epoch 1.0.7 by salival updated by Airwaves Man.
 * [Mission folder install](https://github.com/oiad/vkc#mission-folder-install)
 * [dayz_server folder install](https://github.com/oiad/vkc#dayz_server-folder-install)
 * [BattlEye filter install](https://github.com/oiad/vkc#battleye-filter-install)
+* [Old Releases](https://github.com/oiad/vkc#old-releases)
 	
 **[>> Download <<](https://github.com/oiad/vkc/archive/master.zip)**	
 	
 # Install:
 
 * This install basically assumes you have a custom variables.sqf, compiles.sqf and fn_selfActions.sqf.
+
+** If not, visit this repo and follow the steps there**
+https://github.com/AirwavesMan/custom-epoch-functions
+
 
 # Mission folder install:
 
@@ -313,7 +318,10 @@ Vehicle key changer script for Epoch 1.0.7 by salival updated by Airwaves Man.
 	5 lbCurSel <CUT> !="vkc_charID = (vkc_keyList select 0) select (lbCurSel 4802);vkc_keyName = (vkc_keyList select 1) select (lbCurSel 4802);"
 	```	
 
-**** *For Epoch 1.0.6.2 only* ****
+# Old Releases:
+
+**** *Epoch 1.0.6.2* ****
 **[>> Download <<](https://github.com/oiad/vkc/archive/refs/tags/Epoch_1.0.6.2.zip)**
 
-Visit this link: https://github.com/oiad/vkc/tree/Epoch_1.0.6.2	
+
+
